@@ -1,4 +1,4 @@
-const resolution = 1.2; // tile size in meters
+const resolution = 2; // tile size in meters
 const EQUATOR_LENGTH = 40075016.7; // in meters
 const ROAD_WIDTH = 3; // width of road in meters
 const zoomLevel = 18;
