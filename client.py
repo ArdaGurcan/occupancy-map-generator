@@ -38,7 +38,7 @@ async def main():
     await browser.close()
 
     # Do other stuff
-    print(f"shape: {occupancy_map.shape}, size: {occupancy_map.size}")
+    print(f"type: {type(occupancy_map)}, shape: {occupancy_map.shape}, size: {occupancy_map.size}")
 
 loop = asyncio.get_event_loop()
 
