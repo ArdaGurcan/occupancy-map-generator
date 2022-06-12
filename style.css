@@ -1,0 +1,20 @@
+#map {
+  height: 800px;
+  width: 800px;
+  margin: auto;
+}
+
+#grid-holder {
+  height: 800px;
+  width: 800px;
+  margin: auto;
+}
+
+#dest-canvas {
+  height: 800px;
+  width: 800px;
+}
+
+body {
+  background-color: #50586C;
+}
