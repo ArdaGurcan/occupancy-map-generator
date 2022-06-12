@@ -15,6 +15,10 @@
   width: 800px;
 }
 
+#result {
+  font-size: 6.6px;
+}
+
 body {
   background-color: #50586C;
 }

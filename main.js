@@ -1,7 +1,10 @@
-const resolution = 2; // tile size in meters
+// Get query string params
+const params = new URLSearchParams(window.location.search)
+
+const resolution = params.get("tileSize") || 2; // tile size in meters
 const EQUATOR_LENGTH = 40075016.7; // in meters
 const ROAD_WIDTH = 3; // width of road in meters
-const zoomLevel = 18;
+const zoomLevel = params.get("zoomLevel") || 18;
 const mapSize = { x: 1600, y: 1600 };
 
 // Cosmetics
@@ -9,9 +12,9 @@ const palette = ["#FCEDDA", "#EE4E34"];
 
 // Create waypoints
 const waypoints = [
-    L.latLng(39.78344042525829, 32.8125),
-    L.latLng(39.7844, 32.81435),
-];
+    L.latLng(params.get("startLat") || 39.78344042525829, params.get("startLng") || 32.8125),
+    L.latLng(params.get("endLat") || 39.7844, params.get("endLng") || 32.81435),
+];  
 
 // Calculate tile size in pixels
 const tileSize = Math.floor(
@@ -140,6 +143,6 @@ const generateOccupancyMap = () => {
                 }
             }
         }
-        console.log(JSON.stringify(grid));
+        $('#result')[0].innerHTML = JSON.stringify(grid)
     }, 100);
 };
