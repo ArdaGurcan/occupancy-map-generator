@@ -4,7 +4,6 @@ import numpy as np
 from pyppeteer import launch
 import json
 import requests
-from requests.exceptions import HTTPError
 
 
 async def main():
@@ -41,19 +40,27 @@ async def main():
     await browser.close()
 
     #
-    flat = np.reshape(occupancy_map,(-1,2560))
-
+    flat = np.reshape(occupancy_map, (-1,2560))
+    print(flat.ravel()[0])
+    elevations = []
     for part in flat:
         params = '|'.join([f'{tile["lat"]},{tile["lng"]}' for tile in part])
 
         response = requests.post('http://77.68.15.151:5000/v1/eudem25m',
-                                json={'locations': params})
-        # response.raise_for_status()   
-        print([tile["elevation"] for tile in response.json()["results"]])
-    # Do other stuff
+                                 json={'locations': params})
 
-    print(
-        f"type: {type(occupancy_map)}, shape: {occupancy_map.shape}, size: {occupancy_map.size}")
+        elevations += [tile["elevation"]
+                       for tile in response.json()["results"]]
+
+    occupancy_map = np.array([{"occupied": flat.ravel()[i]["occupied"], "elevation":elevations[i]} for i in range(len(elevations))]).reshape(int(occupancy_map.size**0.5),int(occupancy_map.size**0.5))
+    
+    print(occupancy_map)
+
+    f = open("output.json", "w")
+    f.write(json.dumps(occupancy_map.tolist()))
+    f.close()
+
+
 
 loop = asyncio.get_event_loop()
 
