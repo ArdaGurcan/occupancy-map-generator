@@ -1,5 +1,5 @@
 // Get query string params
-const params = new URLSearchParams(window.location.search)
+const params = new URLSearchParams(window.location.search);
 
 const resolution = params.get("tileSize") || 2; // tile size in meters
 const EQUATOR_LENGTH = 40075016.7; // in meters
@@ -12,9 +12,12 @@ const palette = ["#FCEDDA", "#EE4E34"];
 
 // Create waypoints
 const waypoints = [
-    L.latLng(params.get("startLat") || 39.78344042525829, params.get("startLng") || 32.8125),
+    L.latLng(
+        params.get("startLat") || 39.78344042525829,
+        params.get("startLng") || 32.8125
+    ),
     L.latLng(params.get("endLat") || 39.7844, params.get("endLng") || 32.81435),
-];  
+];
 
 // Calculate tile size in pixels
 const tileSize = Math.floor(
@@ -66,7 +69,6 @@ const control = L.Routing.control({
 
 control.addTo(map);
 
-
 map.on("moveend", () => {
     generateOccupancyMap();
 });
@@ -74,7 +76,6 @@ map.on("moveend", () => {
 control.on("routeselected", () => {
     generateOccupancyMap();
 });
-
 
 const generateOccupancyMap = () => {
     setTimeout(() => {
@@ -88,7 +89,6 @@ const generateOccupancyMap = () => {
 
         displayCtx.fillStyle = palette[0];
         displayCtx.fillRect(0, 0, mapSize.x, mapSize.y);
-
 
         // Get pixels from leaflet map
         let imageData = leafletCtx.getImageData(
@@ -112,7 +112,7 @@ const generateOccupancyMap = () => {
                             y * 4 * mapSize.x +
                             n * 4 * tileSize +
                             m * 4 * mapSize.x * tileSize;
-                        
+
                         // If a transparent pixel is found mark tile as occupied
                         if (colors[i + 3] < 50) {
                             occupied = true;
@@ -123,7 +123,16 @@ const generateOccupancyMap = () => {
                         break;
                     }
                 }
-                row.push(+occupied);
+                const pixelCoords = {
+                    x: n * tileSize + tileSize / 2,
+                    y: m * tileSize + tileSize / 2,
+                };
+                const latLng = map.containerPointToLatLng(pixelCoords);
+                row.push({
+                    occupied: occupied,
+                    lat: latLng.lat,
+                    lng: latLng.lng,
+                });
             }
             grid.push(row);
         }
@@ -133,7 +142,7 @@ const generateOccupancyMap = () => {
         // Display occupancy map
         for (let y = 0; y < grid.length; y++) {
             for (let x = 0; x < grid[y].length; x++) {
-                if (grid[y][x]) {
+                if (grid[y][x].occupied) {
                     displayCtx.fillRect(
                         x * tileSize,
                         y * tileSize,
@@ -143,6 +152,6 @@ const generateOccupancyMap = () => {
                 }
             }
         }
-        $('#result')[0].innerHTML = JSON.stringify(grid)
+        $("#result")[0].innerHTML = JSON.stringify(grid);
     }, 100);
 };
