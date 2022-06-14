@@ -3,6 +3,9 @@ from bs4 import BeautifulSoup
 import numpy as np
 from pyppeteer import launch
 import json
+import requests
+from requests.exceptions import HTTPError
+
 
 async def main():
     # Launch the browser
@@ -21,7 +24,7 @@ async def main():
 
     # Open our test file in the opened page
     await page.goto(page_path)
-    await asyncio.sleep(0.5)
+    await asyncio.sleep(2)
     page_content = await page.content()
 
     # Process extracted content with BeautifulSoup
@@ -37,8 +40,20 @@ async def main():
     # Close browser
     await browser.close()
 
+    #
+    flat = np.reshape(occupancy_map,(-1,2560))
+
+    for part in flat:
+        params = '|'.join([f'{tile["lat"]},{tile["lng"]}' for tile in part])
+
+        response = requests.post('http://77.68.15.151:5000/v1/eudem25m',
+                                json={'locations': params})
+        # response.raise_for_status()   
+        print([tile["elevation"] for tile in response.json()["results"]])
     # Do other stuff
-    print(f"type: {type(occupancy_map)}, shape: {occupancy_map.shape}, size: {occupancy_map.size}")
+
+    print(
+        f"type: {type(occupancy_map)}, shape: {occupancy_map.shape}, size: {occupancy_map.size}")
 
 loop = asyncio.get_event_loop()
 
