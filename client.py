@@ -16,7 +16,7 @@ async def main():
     # Set params
     start = (39.783, 32.8125)
     end = (39.7844, 32.81435)
-    tile_size = 2
+    tile_size = 1.5
 
     # Create URL
     page_path = f"https://ardagurcan.com/projects/occupancy-map?startLat={start[0]}&startLng={start[1]}&endLat={end[0]}&endLng={end[1]}&tileSize={tile_size}"
