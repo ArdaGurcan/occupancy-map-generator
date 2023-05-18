@@ -1,5 +1,5 @@
 # Occupancy Map Generator
-Generates occupancy map from OpenStreetMap data and transfers it onto a numpy array
+Generates occupancy map from OpenStreetMap data given start latitude & longitude and end latitude & longitude then transfers it into a numpy array.
 
 Leaflet.js Route             |  Generated Occupancy Map
 :-------------------------:|:-------------------------:
